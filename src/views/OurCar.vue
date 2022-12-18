@@ -40,7 +40,7 @@
                             </figure>
                         </td>
                         <td>
-                            <button class="button is-small is-warning is-rounded" aria-haspopup="true" aria-controls="dropdown-menu3" style="padding-left: 1em; padding-right: 1em;">
+                            <button class="button is-small is-warning is-rounded" aria-haspopup="true" aria-controls="dropdown-menu3" style="padding-left: 1em; padding-right: 1em;" @click="updateCarConfirm(car)">
                                 <span class="icon is-medium">
                                     <font-awesome-icon icon="fa-solid fa-marker" />
                                 </span>
@@ -162,7 +162,98 @@
                 </footer>
             </div>
         </div>
+
+        <!-- Modal Update Car Form -->
+        <div class="modal" v-bind:class="{'is-active' : modalUpdateCar}">
+            <div class="modal-background" @click="modalUpdateCar = !modalUpdateCar; checkUpdateNewImage = false"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Update Car</p>
+                    <button class="delete" aria-label="close" @click="modalUpdateCar = !modalUpdateCar; checkUpdateNewImage = false"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Type</label>
+                            <div class="select">
+                                <select v-model="updateTypeCar">
+                                    <option value="" disabled="disabled">--- Select Type of Car ---</option>
+                                    <option value="sedan">sedan</option>
+                                    <option value="suv">suv</option>
+                                    <option value="pickup">pickup</option>
+                                    <option value="van">van</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Brand</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="" v-model="updateBrandCar">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Model</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="" v-model="updateModelCar">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">NumOfSeat</label>
+                            <div class="control">
+                                <input class="input" type="number" placeholder="" v-model="updateNumOfSeatCar">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Price</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" placeholder="" v-model="updatePriceCar">
+                                <span class="icon is-small is-left">
+                                    <font-awesome-icon icon="fa-solid fa-baht-sign" />
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Quantity</label>
+                            <div class="control">
+                                <input class="input" type="number" placeholder="" v-model="updateQuantityCar">
+                            </div>
+                        </div>
+                        <div class="file">
+                            <label class="file-label">
+                            <input class="file-input" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" @change="selectUpdateImage($event)">
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <font-awesome-icon icon="fa-solid fa-upload" />
+                                    </span>
+                                    <span class="file-label">
+                                        Choose a file…
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                        <!-- Show Image -->
+                        <div v-if="updateImageCar" class="columns">
+                            <div class="column">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <figure class="image is-4by3">
+                                            <img v-bind:src="`data:image/png;base64, ${updateImageCar.data}`" alt="Placeholder image">
+                                            <img v-if="checkUpdateNewImage" :src="showImage(updateImageCar)" alt="Placeholder image">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-link" @click="updateCar()">Update Car</button>
+                    <button class="button" @click="modalUpdateCar = !modalUpdateCar; checkUpdateNewImage = false">Cancel</button>
+                </footer>
+            </div>
+        </div>
     </div>
+    
 
     
 
@@ -186,10 +277,25 @@ export default {
             priceCar: '',
             quantityCar: '',
             imageCar: '',
+            modalUpdateCar: false,
+            updateCarId: '',
+            updateTypeCar: '',
+            updateBrandCar: '',
+            updateModelCar: '',
+            updateNumOfSeatCar: '',
+            updatePriceCar: '',
+            updateQuantityCar: '',
+            updateImageCar: '',
+            typeUpdateImage: '',
+            checkUpdateNewImage: false
         }
+    },
+    created(){
+
     },
     mounted(){
         this.getAllCars()
+        
     },
     methods: {
         getAllCars(){
@@ -217,6 +323,24 @@ export default {
                 console.log(err)
                 this.modalDeleteCar = false
             })
+        },
+        updateCarConfirm(car){
+            this.modalUpdateCar = true
+            this.updateCarId = car._id
+            this.updateTypeCar = car.type
+            this.updateBrandCar = car.brand
+            this.updateModelCar = car.model
+            this.updateNumOfSeatCar = car.numOfSeat
+            this.updatePriceCar = car.price
+            this.updateQuantityCar = car.quantity
+            this.updateImageCar = car.image
+            this.typeUpdateImage = typeof this.updateImageCar
+            
+            console.log(typeof this.updateImageCar)
+        },
+        selectUpdateImage(event){
+            this.checkUpdateNewImage = true
+            this.updateImageCar = event.target.files[0]
         },
         selectImage(event){
             this.imageCar = event.target.files[0]
@@ -266,9 +390,62 @@ export default {
                         this.$router.push({name: 'ourcar'})
                         this.modalAddCar = false
                     })
-                    .catch((error) => alert(error.response.data.message));
+                    .catch((error) => {
+                        alert(error.response.data.message)
+                        this.modalAddCar = false
+                    });
             }
-        }
+        },
+        updateCar(){
+            if (this.updateTypeCar === 0){
+                alert('กรุณาเลือกประเภทรถ')
+            }
+            else if (this.updateBrandCar === ''){
+                alert('กรุณาใส่ยี่ห้อรถ')
+            }
+            else if (this.updateModelCar === ''){
+                alert('กรุณาใส่รุ่นรถ')
+            }
+            else if (this.updateNumOfSeatCar === ''){
+                alert('กรุณาใส่จำนวนที่นั่ง')
+            }
+            else if (this.updatePriceCar === ''){
+                alert('กรุณาใส่ราคาเช่าต่อวัน')
+            }
+            else if (this.updateQuantityCar === ''){
+                alert('กรุณาใส่จำนวนรถ')
+            }
+            else if (this.updateImageCar === ''){
+                alert('กรุณาเพิ่มรูปภาพรถ')
+            }
+            else{
+                const formData = new FormData();
+                formData.append("type", this.updateTypeCar)
+                formData.append("brand", this.updateBrandCar)
+                formData.append("model", this.updateModelCar)
+                formData.append("numOfSeat", this.updateNumOfSeatCar)
+                formData.append("price", this.updatePriceCar)
+                formData.append("quantity", this.updateQuantityCar)
+                formData.append("image", this.updateImageCar)
+                axios
+                    .put("/cars/updateCar/"+this.updateCarId, formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                    })
+                    .then(() => {
+                        this.$router.push({name: 'ourcar'})
+                        this.modalUpdateCar = false
+                        this.checkUpdateNewImage = false
+                    })
+                    .catch((error) => {
+                        alert(error.response.data.message)
+                        this.modalUpdateCar = false
+                        this.checkUpdateNewImage = false
+                    });
+            }
+        },
     }
 }
 </script>
