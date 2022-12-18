@@ -253,10 +253,6 @@
             </div>
         </div>
     </div>
-    
-
-    
-
 
 </template>
 
@@ -286,7 +282,6 @@ export default {
             updatePriceCar: '',
             updateQuantityCar: '',
             updateImageCar: '',
-            typeUpdateImage: '',
             checkUpdateNewImage: false
         }
     },
@@ -334,9 +329,6 @@ export default {
             this.updatePriceCar = car.price
             this.updateQuantityCar = car.quantity
             this.updateImageCar = car.image
-            this.typeUpdateImage = typeof this.updateImageCar
-            
-            console.log(typeof this.updateImageCar)
         },
         selectUpdateImage(event){
             this.checkUpdateNewImage = true
