@@ -6,7 +6,6 @@
       <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
     </a> -->
     <a class="navbar-item" href="/">
-      
       <span class="icon-text has-text-warning">
         <span><h1 class="title is-4 has-text-warning">CARENT</h1></span>
         <span class="icon is-medium	">
@@ -31,6 +30,12 @@
 
       <a class="navbar-item">
         Payment
+      </a>
+
+      <a class="navbar-item">
+        <router-link to="/payments/addPayment" class="has-text-white">
+          <span>Inform Evidence</span>
+        </router-link>
       </a>
 
     </div>

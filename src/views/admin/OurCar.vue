@@ -257,7 +257,7 @@
 </template>
 
 <script>
-import axios from '../plugins/axios';
+import axios from '@/plugins/axios'
 
 export default {
     data(){
@@ -285,12 +285,8 @@ export default {
             checkUpdateNewImage: false
         }
     },
-    created(){
-
-    },
     mounted(){
         this.getAllCars()
-        
     },
     methods: {
         getAllCars(){

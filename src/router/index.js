@@ -12,8 +12,13 @@ const routes = [
     {
         path: '/cars/getAllCars',
         name: 'ourcar',
-        component: () => import('../views/OurCar.vue')
+        component: () => import('../views/admin/OurCar.vue')
     },
+    {
+        path: '/payments/addPayment',
+        name: 'addpayment',
+        component: () => import('../views/CreateEvidence.vue')
+    }
     // {
     //     path: '/orders',
     //     name: 'order',
